@@ -7,6 +7,11 @@ brain = Brain()
 
 # Robot configuration code
 brain_inertial = Inertial()
+left_drive_smart = Motor(Ports.PORT7, False)
+right_drive_smart = Motor(Ports.PORT9, True)
+drivetrain = SmartDrive(left_drive_smart, right_drive_smart, brain_inertial, 259.34, 320, 40, MM, 1)
+motor_4 = Motor(Ports.PORT4, False)
+motor_3 = Motor(Ports.PORT3, False)
 
 
 # Wait for sensor(s) to fully initialize
@@ -23,6 +28,25 @@ def initializeRandomSeed():
 
 # Initialize random seed 
 initializeRandomSeed()
+
+vexcode_initial_drivetrain_calibration_completed = False
+def calibrate_drivetrain():
+    # Calibrate the Drivetrain Inertial
+    global vexcode_initial_drivetrain_calibration_completed
+    sleep(200, MSEC)
+    brain.screen.print("Calibrating")
+    brain.screen.next_row()
+    brain.screen.print("Inertial")
+    brain_inertial.calibrate()
+    while brain_inertial.is_calibrating():
+        sleep(25, MSEC)
+    vexcode_initial_drivetrain_calibration_completed = True
+    brain.screen.clear_screen()
+    brain.screen.set_cursor(1, 1)
+
+
+# Calibrate the Drivetrain
+calibrate_drivetrain()
 
 #endregion VEXcode Generated Robot Configuration
 # ------------------------------------------
@@ -83,5 +107,3 @@ def when_started1():
     drivetrain.drive_for(REVERSE, 300, MM)
     motor_3.spin_for(REVERSE, 280, DEGREES)
 
-
-when_started1()
